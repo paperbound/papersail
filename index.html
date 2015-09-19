@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>papersail</title>
+        <style>
+            body{ margin:0; }
+            canvas{ width:100%; height:100%; }
+        </style>
+        <script src = "js/three.min.js"></script>
+        <script src = "js/OrbitAndPanControls.js"></script>
+        <script src = "js/Coordinates.js"></script>
+        <script src = "js/uclass_BeveledBlockGeometry.js"></script>
+    </head>
+    <body>
+      <script>
+
+          // Globals
+
+          var camera, scene, renderer;
+          var cameraControls;
+
+          // setting up the clock
+          var clock = new THREE.Clock();
+
+          // For Champering
+          var bevelRadius = 1.4;
+
+          // Initialiser : For Camera, Controls, Scene, Renderer and Lights
+
+          function init(){
+
+              var canvasWidth = window.innerWidth;
+              var canvasHeight = window.innerHeight;
+              var canvasRatio = canvasWidth/canvasHeight;
+
+              // Creating the Scene
+
+              scene = new THREE.Scene(); //
+
+              //scene.fog = new THREE.Fog( 0x808080, 2000, 4000);
+
+              scene.add( new THREE.AmbientLight( 0x222222 ) );
+
+              // Lights
+              var light1 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+              light1.position.set( 200, 200, 200 );
+
+              var light2 = new THREE.DirectionalLight( 0xffffff, 1.5 );
+              light2.position.set( -200, -200, -200 );
+
+              scene.add( light1 );
+              scene.add( light2 );
+
+              // Renderer
+
+              renderer = new THREE.WebGLRenderer( { antialias: true });
+              renderer.setSize( canvasWidth, canvasHeight );
+              renderer.setClearColor( 0x000000 , 1 );
+
+              document.body.appendChild( renderer.domElement );
+
+              // Setting up the Camera
+
+              camera = new THREE.PerspectiveCamera( 45, canvasRatio, 1, 4000 );
+              camera.position.set( 200, 200, 350 );
+              //camera.target(0, 0, 0);
+
+              // Controls
+
+              cameraControls = new THREE.OrbitAndPanControls( camera, renderer.domElement );
+              cameraControls.target.set( 0, 0, 0 );
+          }
+
+          // Drawing Functions
+
+          function drawShip(){
+
+              var shipBase;
+              var sbLength = 400;
+              var sbWidth = 80;
+              var sbHeight = 50;
+
+              var sbMaterial = new THREE.MeshLambertMaterial( {
+                color: 0x22161e,
+                wireframe: true,
+                emissive: 0x391d1d,
+                shininess: 30,
+                reflectivity: 0.7,
+                vertexColors: THREE.FaceColors } );
+
+              var sbGeometry = new THREE.BeveledBlockGeometry(sbWidth, sbHeight, sbLength, bevelRadius);
+
+              shipBase = new THREE.Mesh( sbGeometry, sbMaterial );
+              shipBase.position.set( 0, 25, 0 );
+              scene.add( shipBase );
+
+              Coordinates.drawGround({size:1000});
+              //Coordinates.drawAllAxes({axisLength:200,axisRadius:1,axisTess:50});
+              Coordinates.drawGrid({size:1000,scale:0.01});
+
+          }
+
+          //  function drawChair(){
+          //
+          //     var chair = new THREE.Object3D();
+          //     var i;
+          //     var j;
+          //
+          //     for( j=0; j<2; j++){
+          //         for( i=0; i < 2; i++ ){
+          //             var legs = new THREE.Mesh( new THREE.CylinderGeometry(3.5, 3.5, 45, 20), new THREE.MeshLambertMaterial( {color: 0x883300} ));
+          //             legs.position.set( (i+j)*25, 0, (i-j)*25 );
+          //             chair.add( legs );
+          //         }
+          //     }
+          //
+          //     var glassMaterial = new THREE.MeshPhongMaterial( { ambient: 0x030303, color: 0x883300, transparent:true, opacity:0.9, specular: 0x009900, shininess: 30, shading: THREE.FlatShading } );
+          //
+          //     var glassGeometry = new THREE.BeveledBlockGeometry(42.5, 3, 42.5, bevelRadius);
+          //
+          //     var chairSeat = new THREE.Mesh( glassGeometry, glassMaterial);
+          //     chairSeat.position.set( 25 , 22.5, 0 );
+          //     chairSeat.rotation.y = ( 45 * Math.PI/180 );
+          //     chair.add(chairSeat);
+          //
+          //     var chairBack = new THREE.Mesh( glassGeometry, glassMaterial);
+          //     chairBack.position.set( 12.5 , 45 , 12.5 );
+          //     chairBack.rotation.y = ( 45 * Math.PI/180 );
+          //     chairBack.rotation.z = ( 90 * Math.PI/180 );
+          //     chair.add( chairBack );
+          //
+          //
+          //     chair.position.set( -90, 25, -20 );
+          //     chair.rotation.y = (-45 * Math.PI/180 );
+          //     scene.add( chair );
+          //
+          // }
+
+          function drawObjects(){
+
+              // Draw the Ship
+              drawShip();
+
+          }
+
+          function animate() {
+              requestAnimationFrame(animate);
+              render();
+          }
+
+          function render(){
+              var delta = clock.getDelta();
+              cameraControls.update(delta);
+              renderer.render( scene, camera );
+          }
+
+          init();
+          drawObjects();
+          animate();
+
+      </script>
+    </body>
+</html>
