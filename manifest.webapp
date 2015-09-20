@@ -2,7 +2,7 @@
   "version": "0.1.0",
   "name": "papersail",
   "description": "Sail!",
-  "launch_path": "/index.html",
+  "launch_path": "/menu.html",
   "icons": {
     "16": "/img/icons/icon16x16.png",
     "48": "/img/icons/icon48x48.png",
